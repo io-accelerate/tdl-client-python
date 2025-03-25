@@ -4,6 +4,7 @@ import time
 from tdl.queue.abstractions.response.fatal_error_response import FatalErrorResponse
 from tdl.queue.processing_rules import ProcessingRules
 from tdl.queue.transport.remote_broker import RemoteBroker
+from tdl.audit.presentation_utils import PresentationUtils
 
 
 class QueueBasedImplementationRunner:
@@ -58,8 +59,12 @@ class QueueBasedImplementationRunnerAudit:
     def start_line(self):
         self._lines[:] = []
 
-    def log(self, auditable):
-        text = auditable.get_audit_text()
+    def log_request(self, request):
+        text = PresentationUtils.to_displayable_request(request)
+        self._lines.append(text)
+
+    def log_response(self, response):
+        text = PresentationUtils.to_displayable_response(response)
         self._lines.append(text)
 
     def end_line(self):
@@ -111,10 +116,10 @@ class ApplyProcessingRules:
 
     def process_next_request_from(self, remote_broker, headers, request):
         self._audit.start_line()
-        self._audit.log(request)
+        self._audit.log_request(request)
 
         response = self._processing_rules.get_response_for(request)
-        self._audit.log(response)
+        self._audit.log_response(response)
 
         #TODO: check again if this is correctly done, come back later to complete it
         if isinstance(response, FatalErrorResponse):

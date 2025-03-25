@@ -124,6 +124,8 @@ def get_implementation(implementation_name):
         'sum the elements of an array': lambda x: sum(x),
         'generate array of integers': lambda x, y: list(range(x, y)),
         'work for 600ms': lambda param: do_slow_work(600),
+        'concatenate fields as string': lambda obj: obj["field1"] + str(obj["field2"]),
+        'build an object with two fields': lambda field1, field2: { "field1": field1, "field2": field2 },
     }
 
     if implementation_name in test_implementations:
