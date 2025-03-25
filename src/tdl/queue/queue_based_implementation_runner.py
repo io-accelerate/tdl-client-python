@@ -60,11 +60,19 @@ class QueueBasedImplementationRunnerAudit:
         self._lines[:] = []
 
     def log_request(self, request):
-        text = PresentationUtils.to_displayable_request(request)
+        params_as_string = PresentationUtils.to_displayable_request(request.params)
+        text = 'id = {id}, req = {method}({params})'.format(
+            id=request.id,
+            method=request.method,
+            params=params_as_string)
         self._lines.append(text)
 
     def log_response(self, response):
-        text = PresentationUtils.to_displayable_response(response)
+        if response.id == 'error':
+            text = 'error = "{0}", (NOT PUBLISHED)'.format(response.result)
+        else:
+            representation = PresentationUtils.serialize_and_compress(response.result)
+            text = 'resp = {0}'.format(representation)
         self._lines.append(text)
 
     def end_line(self):

@@ -5,44 +5,34 @@ from collections.abc import Sequence
 class PresentationUtils:
 
     @staticmethod
-    def to_displayable_request(request):
+    def to_displayable_request(params):
         compressed_params = []
-        for param in request.params:
-            representation = json.dumps(param, separators=(',', ':'))
-
-            # result is array-like, needs a bit more spacing
-            if PresentationUtils.is_list(param):
-                representation = representation.replace(',', ', ')
-            elif PresentationUtils.is_multiline_string(representation):
-                representation = PresentationUtils.suppress_extra_lines(representation)
-            
+        for param in params:
+            representation = PresentationUtils.serialize_and_compress(param)
             compressed_params.append(representation)
             
-        params_as_string = ', '.join(compressed_params)
-        return 'id = {id}, req = {method}({params})'.format(
-            id=request.id,
-            method=request.method,
-            params=params_as_string)
+        return ', '.join(compressed_params)
 
     @staticmethod
-    def to_displayable_response(response):
-        if response.id == 'error':
-            return 'error = "{0}", (NOT PUBLISHED)'.format(response.result)
-        else:
-            value = response.result
-            representation = json.dumps(response.result, separators=(',', ':'))
+    def to_displayable_response(value):
+        return PresentationUtils.serialize_and_compress(value)
+
+    @staticmethod
+    def serialize_and_compress(value):
+        representation = json.dumps(value, separators=(',', ':'))
 
             # result is array-like, needs a bit more spacing
-            if PresentationUtils.is_list(value):
-                representation = representation.replace(',', ', ')
-            elif PresentationUtils.is_multiline_string(representation):
-                representation = PresentationUtils.suppress_extra_lines(representation)
+        if PresentationUtils.is_list(value):
+            representation = representation.replace(',', ', ')
+        elif PresentationUtils.is_multiline_string(representation):
+            representation = PresentationUtils.suppress_extra_lines(representation)
 
-            return 'resp = {0}'.format(representation)
+        return representation
+
 
     @staticmethod
     def is_list(value):
-        isinstance(value, Sequence) and not isinstance(value, str)
+        return isinstance(value, Sequence) and not isinstance(value, str)
 
     @staticmethod
     def is_multiline_string(value):
