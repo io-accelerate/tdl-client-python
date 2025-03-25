@@ -103,10 +103,38 @@ python3 -m build
 The `tdl-client-python-x.xx.x.tar.gz` archive can be found in the `dist` folder.
 
 
+
 # To release
 
-Run
-
+Set version manually in `setup.py`:
 ```
-./release.sh
+    VERSION = "0.29.1"
+```
+
+Commit the changes
+```
+export RELEASE_TAG="v$(cat setup.py | grep "VERSION =" | cut -d "\"" -f2)"
+echo ${RELEASE_TAG}
+
+git add --all
+git commit -m "Releasing version ${RELEASE_TAG}"
+
+git tag -a "${RELEASE_TAG}" -m "${RELEASE_TAG}"
+git push --tags
+git push
+```
+
+Wait for the Github build to finish, then go to:
+https://www.nuget.org
+
+## To manually build the NuGet files
+
+```bash
+rm -f src/Client/bin/Release/*.nupkg
+
+dotnet build --configuration Release src/Client/
+dotnet pack --configuration Release src/Client
+
+export NUGET_TOKEN=<value from https://www.nuget.org/account/apikeys>
+dotnet nuget push src/Client/bin/Release/*.nupkg --api-key "$NUGET_TOKEN" --source https://api.nuget.org/v3/index.json
 ```
