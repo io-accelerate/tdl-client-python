@@ -125,16 +125,8 @@ git push
 ```
 
 Wait for the Github build to finish, then go to:
-https://www.nuget.org
+https://pypi.org/
 
-## To manually build the NuGet files
+## To manually build the PyPi files
 
-```bash
-rm -f src/Client/bin/Release/*.nupkg
-
-dotnet build --configuration Release src/Client/
-dotnet pack --configuration Release src/Client
-
-export NUGET_TOKEN=<value from https://www.nuget.org/account/apikeys>
-dotnet nuget push src/Client/bin/Release/*.nupkg --api-key "$NUGET_TOKEN" --source https://api.nuget.org/v3/index.json
-```
+TODO
