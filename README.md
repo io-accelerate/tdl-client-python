@@ -108,7 +108,7 @@ The `tdl-client-python-x.xx.x.tar.gz` archive can be found in the `dist` folder.
 
 Set version manually in `setup.py`:
 ```
-    VERSION = "0.29.1"
+VERSION = "0.29.1"
 ```
 
 Commit the changes
