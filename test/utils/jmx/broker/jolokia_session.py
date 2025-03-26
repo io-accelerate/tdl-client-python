@@ -12,9 +12,8 @@ class JolokiaSession(object):
         jolokia_url = "http://{host}:{admin_port}/api/jolokia".format(host=host, admin_port=admin_port)
         endpoint = '/version'
         response = requests.get(jolokia_url + endpoint, headers={"Origin":"http://localhost"})
-        jolokia_version = json.loads(response.text)['value']['agent']
-        if not jolokia_version:
-            raise Exception("Failed to retrieve the right Jolokia version.")
+        if response.status_code != 200:
+            raise Exception(f"Failed to connect to Jolokia. Status code: {response.status_code}")
         return JolokiaSession(jolokia_url)
 
     def request(self, jolokia_payload):
