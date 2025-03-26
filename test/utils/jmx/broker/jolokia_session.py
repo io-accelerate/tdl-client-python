@@ -12,17 +12,9 @@ class JolokiaSession(object):
         jolokia_url = "http://{host}:{admin_port}/api/jolokia".format(host=host, admin_port=admin_port)
         endpoint = '/version'
         response = requests.get(jolokia_url + endpoint, headers={"Origin":"http://localhost"})
-        expected_jolokia_version = '2.0.0-M4'
         jolokia_version = json.loads(response.text)['value']['agent']
-        if jolokia_version != expected_jolokia_version:
-            msg = (
-                "Failed to retrieve the right Jolokia version. "
-                "Expected: {expected_jolokia_version} got {jolokia_version}"
-            ).format(
-                expected_jolokia_version=expected_jolokia_version,
-                jolokia_version=jolokia_version
-            )
-            raise Exception(msg)
+        if not jolokia_version:
+            raise Exception("Failed to retrieve the right Jolokia version.")
         return JolokiaSession(jolokia_url)
 
     def request(self, jolokia_payload):
