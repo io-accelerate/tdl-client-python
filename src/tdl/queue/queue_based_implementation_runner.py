@@ -71,7 +71,7 @@ class QueueBasedImplementationRunnerAudit:
         if response.id == 'error':
             text = 'error = "{0}", (NOT PUBLISHED)'.format(response.result)
         else:
-            representation = PresentationUtils.serialize_and_compress(response.result)
+            representation = PresentationUtils.to_displayable_response(response.result)
             text = 'resp = {0}'.format(representation)
         self._lines.append(text)
 
