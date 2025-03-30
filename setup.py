@@ -1,7 +1,7 @@
 from setuptools import setup
 
 # !!!!!!! MAJOR DEBT - This is hardcoded
-VERSION = "0.29.2"
+VERSION = "0.29.3"
 
 # ~~~~~ Create configuration
 from pathlib import Path
