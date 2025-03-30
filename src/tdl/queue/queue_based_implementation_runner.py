@@ -1,7 +1,10 @@
 import datetime
 import time
 
+from types import SimpleNamespace
+
 from tdl.queue.abstractions.response.fatal_error_response import FatalErrorResponse
+from tdl.queue.abstractions.request import Request
 from tdl.queue.processing_rules import ProcessingRules
 from tdl.queue.transport.remote_broker import RemoteBroker
 from tdl.audit.presentation_utils import PresentationUtils
@@ -126,7 +129,8 @@ class ApplyProcessingRules:
         self._audit.start_line()
         self._audit.log_request(request)
 
-        response = self._processing_rules.get_response_for(request)
+        request_as_object = ApplyProcessingRules.request_as_object(request)
+        response = self._processing_rules.get_response_for(request_as_object)
         self._audit.log_response(response)
 
         #TODO: check again if this is correctly done, come back later to complete it
@@ -140,3 +144,19 @@ class ApplyProcessingRules:
         self._audit.end_line()
 
         return None
+
+    @staticmethod
+    def request_as_object(reqeust):
+        return Request(
+            reqeust.method,
+            ApplyProcessingRules.dict_to_namespace(reqeust.params),
+            reqeust.id)
+
+    # Convert to object for native handling in the UserImplementation
+    @staticmethod
+    def dict_to_namespace(d):
+        if isinstance(d, dict):
+            return SimpleNamespace(**{k: ApplyProcessingRules.dict_to_namespace(v) for k, v in d.items()})
+        elif isinstance(d, list):
+            return [ApplyProcessingRules.dict_to_namespace(i) for i in d]
+        return d
