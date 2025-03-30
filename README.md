@@ -6,16 +6,13 @@
 
 ### Submodules
 
-Project contains submodules as mentioned in the `.gitmodules` file:
-
-- broker
-- tdl/client (gets cloned into test/features)
-- wiremock 
+Project contains a submodule as mentioned in the `.gitmodules` file:
+- tdl-client-spec (gets cloned into test/features)
 
 ### Getting started
 
 Requirements:
-- `Python 3.10` (support for `Python 2.x` has been dropped)
+- `Python 3.12` (support for `Python 2.x` has been dropped)
 - `pip` (ensure it supports `Python 3.10`)
 
 Python client to connect to the central kata server.
