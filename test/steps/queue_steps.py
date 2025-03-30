@@ -134,7 +134,7 @@ def get_implementation(implementation_name):
         'generate array of integers': lambda x, y: list(range(x, y)),
         'work for 600ms': lambda param: do_slow_work(600),
         'concatenate fields as string': lambda obj: as_test_item(obj, lambda item: item.field1 + str(item.field2)),
-        'build an object with two fields': lambda field1, field2: { "field1": field1, "field2": field2 },
+        'build an object with two fields': lambda field1, field2: TestItem(field1, field2).__dict__
     }
 
     if implementation_name in test_implementations:
