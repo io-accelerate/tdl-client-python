@@ -6,16 +6,13 @@
 
 ### Submodules
 
-Project contains submodules as mentioned in the `.gitmodules` file:
-
-- broker
-- tdl/client (gets cloned into test/features)
-- wiremock 
+Project contains a submodule as mentioned in the `.gitmodules` file:
+- tdl-client-spec (gets cloned into test/features)
 
 ### Getting started
 
 Requirements:
-- `Python 3.10` (support for `Python 2.x` has been dropped)
+- `Python 3.12` (support for `Python 2.x` has been dropped)
 - `pip` (ensure it supports `Python 3.10`)
 
 Python client to connect to the central kata server.
@@ -41,7 +38,7 @@ All test require the ActiveMQ broker and Wiremock to be started.
 Start ActiveMQ
 ```shell
 export ACTIVEMQ_CONTAINER=apache/activemq-classic:6.1.0
-docker run -d -it --rm -p 28161:8161 -p 21613:61613 --name activemq ${ACTIVEMQ_CONTAINER}
+docker run -d -it --rm -p 28161:8161 -p 21613:61613 -p 21616:61616 --name activemq ${ACTIVEMQ_CONTAINER}
 ```
 
 The ActiveMQ web UI can be accessed at:
@@ -103,10 +100,30 @@ python3 -m build
 The `tdl-client-python-x.xx.x.tar.gz` archive can be found in the `dist` folder.
 
 
+
 # To release
 
-Run
+Set version manually in `setup.py`:
+```
+VERSION = "0.29.1"
+```
 
+Commit the changes
 ```
-./release.sh
+export RELEASE_TAG="v$(cat setup.py | grep "VERSION =" | cut -d "\"" -f2)"
+echo ${RELEASE_TAG}
+
+git add --all
+git commit -m "Releasing version ${RELEASE_TAG}"
+
+git tag -a "${RELEASE_TAG}" -m "${RELEASE_TAG}"
+git push --tags
+git push
 ```
+
+Wait for the Github build to finish, then go to:
+https://pypi.org/
+
+## To manually build the PyPi files
+
+TODO

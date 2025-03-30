@@ -1,7 +1,7 @@
 from setuptools import setup
 
 # !!!!!!! MAJOR DEBT - This is hardcoded
-VERSION = "0.27.14"
+VERSION = "0.29.4"
 
 # ~~~~~ Create configuration
 from pathlib import Path
@@ -25,6 +25,7 @@ setup(
     version=VERSION,
     description='tdl-client-python',
     long_description=(this_directory / "README.md").read_text(),
+    long_description_content_type='text/markdown',
     author='Julian Ghionoiu',
     author_email='julian.ghionoiu@gmail.com',
     url='https://github.com/julianghionoiu/tdl-client-python',

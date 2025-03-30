@@ -1,9 +1,13 @@
 import datetime
 import time
 
+from types import SimpleNamespace
+
 from tdl.queue.abstractions.response.fatal_error_response import FatalErrorResponse
+from tdl.queue.abstractions.request import Request
 from tdl.queue.processing_rules import ProcessingRules
 from tdl.queue.transport.remote_broker import RemoteBroker
+from tdl.audit.presentation_utils import PresentationUtils
 
 
 class QueueBasedImplementationRunner:
@@ -58,8 +62,20 @@ class QueueBasedImplementationRunnerAudit:
     def start_line(self):
         self._lines[:] = []
 
-    def log(self, auditable):
-        text = auditable.get_audit_text()
+    def log_request(self, request):
+        params_as_string = PresentationUtils.to_displayable_request(request.params)
+        text = 'id = {id}, req = {method}({params})'.format(
+            id=request.id,
+            method=request.method,
+            params=params_as_string)
+        self._lines.append(text)
+
+    def log_response(self, response):
+        if response.id == 'error':
+            text = 'error = "{0}", (NOT PUBLISHED)'.format(response.result)
+        else:
+            representation = PresentationUtils.to_displayable_response(response.result)
+            text = 'resp = {0}'.format(representation)
         self._lines.append(text)
 
     def end_line(self):
@@ -111,12 +127,11 @@ class ApplyProcessingRules:
 
     def process_next_request_from(self, remote_broker, headers, request):
         self._audit.start_line()
-        self._audit.log(request)
+        self._audit.log_request(request)
 
         response = self._processing_rules.get_response_for(request)
-        self._audit.log(response)
+        self._audit.log_response(response)
 
-        #TODO: check again if this is correctly done, come back later to complete it
         if isinstance(response, FatalErrorResponse):
             remote_broker.stop()
             self._audit.end_line()
