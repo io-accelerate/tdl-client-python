@@ -122,7 +122,7 @@ git push
 ```
 
 Wait for the Github build to finish, then go to:
-https://pypi.org/
+https://pypi.org/project/tdl-client-python/
 
 ## To manually build the PyPi files
 
