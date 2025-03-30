@@ -129,8 +129,7 @@ class ApplyProcessingRules:
         self._audit.start_line()
         self._audit.log_request(request)
 
-        request_as_object = ApplyProcessingRules.request_as_object(request)
-        response = self._processing_rules.get_response_for(request_as_object)
+        response = self._processing_rules.get_response_for(request)
         self._audit.log_response(response)
 
         if isinstance(response, FatalErrorResponse):
@@ -143,19 +142,3 @@ class ApplyProcessingRules:
         self._audit.end_line()
 
         return None
-
-    @staticmethod
-    def request_as_object(reqeust):
-        return Request(
-            reqeust.method,
-            ApplyProcessingRules.dict_to_namespace(reqeust.params),
-            reqeust.id)
-
-    # Convert to object for native handling in the UserImplementation
-    @staticmethod
-    def dict_to_namespace(d):
-        if isinstance(d, dict):
-            return SimpleNamespace(**{k: ApplyProcessingRules.dict_to_namespace(v) for k, v in d.items()})
-        elif isinstance(d, list):
-            return [ApplyProcessingRules.dict_to_namespace(i) for i in d]
-        return d

@@ -112,6 +112,15 @@ def do_slow_work(t):
     time.sleep(t/1000.00)
     return "OK"
 
+class TestItem:
+    def __init__(self, field1, field2):
+        self.field1 = field1
+        self.field2 = field2
+
+# Helper functions
+def as_test_item(obj, user_implementation):
+    item = TestItem(**obj)
+    return user_implementation(item)
 
 def get_implementation(implementation_name):
     test_implementations = {
@@ -124,7 +133,7 @@ def get_implementation(implementation_name):
         'sum the elements of an array': lambda x: sum(x),
         'generate array of integers': lambda x, y: list(range(x, y)),
         'work for 600ms': lambda param: do_slow_work(600),
-        'concatenate fields as string': lambda obj: obj.field1 + str(obj.field2),
+        'concatenate fields as string': lambda obj: as_test_item(obj, lambda item: item.field1 + str(item.field2)),
         'build an object with two fields': lambda field1, field2: { "field1": field1, "field2": field2 },
     }
 
