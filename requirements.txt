@@ -1,7 +1,7 @@
 requests==2.32.4
 behave==1.2.6
 PyHamcrest==2.1.0
-coverage==7.9.1
+coverage==7.10.1
 stomp.py==8.2.0
 build==1.2.2.post1
 setuptools==80.9.0
