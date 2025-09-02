@@ -1,4 +1,4 @@
-requests==2.32.4
+requests==2.32.5
 behave==1.2.6
 PyHamcrest==2.1.0
 coverage==7.10.6
